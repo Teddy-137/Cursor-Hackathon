@@ -136,7 +136,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "medihelp.urls"
+ROOT_URLCONF = "tena_hub.urls"
 
 # CORS settings - allow all origins for now
 CORS_ALLOW_ALL_ORIGINS = True
@@ -157,7 +157,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "medihelp.wsgi.application"
+WSGI_APPLICATION = "tena_hub.wsgi.application"
 
 
 # Database
@@ -181,6 +181,8 @@ if os.environ.get("DATABASE_URL"):
         conn_health_checks=True,
         ssl_require=True,  # Required for Render PostgreSQL
     )
+    # Force the engine to use psycopg3 for Python 3.13 compatibility
+    DATABASES["default"]["ENGINE"] = "django.db.backends.postgresql"
     print(f"Using database URL from environment")
 else:
     print("Using SQLite database")

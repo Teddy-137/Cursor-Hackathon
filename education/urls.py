@@ -1,11 +1,8 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import ArticleViewSet, VideoViewSet
+from django.urls import path
+from . import views
 
-router = DefaultRouter()
-router.register(r"articles", ArticleViewSet, basename="article")
-router.register(r"videos", VideoViewSet, basename="video")
+app_name = 'education'
 
 urlpatterns = [
-    path("", include(router.urls)),
+    # Add URL patterns here when views are created
 ]
