@@ -1,0 +1,625 @@
+
+@baseUrl = http://localhost:8000/api
+@authUrl = {{baseUrl}}/auth
+@healthUrl = {{baseUrl}}/health
+@educationUrl = {{baseUrl}}/content
+@firstaidUrl = {{baseUrl}}/firstaid
+@coreUrl = {{baseUrl}}/core
+@doctorsUrl = {{baseUrl}}/doctors
+
+#######################
+### Authentication ###
+#######################
+
+### Register new user
+# @name register
+POST {{authUrl}}/register/
+Content-Type: application/json
+
+{
+    "email": "master@live.com",
+    "first_name": "Master",
+    "last_name": "Master",
+    "phone": "+251922335678",
+    "date_of_birth": "1990-01-02",
+    "password": "MasterPassword123!",
+    "confirm_password": "MasterPassword123!"
+}
+
+
+### Register with invalid data (error case)
+POST {{authUrl}}/register/
+Content-Type: application/json
+
+{
+    "email": "invalid-email",
+    "password": "short"
+}
+
+##### 
+@name login
+POST {{authUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "mail@gmail.com",
+    "password": "pass"
+}
+
+@admintoken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MjUzMDAxLCJpYXQiOjE3NDYyNDk0MDEsImp0aSI6IjM0Mjc4
+### Login to get access token
+# @name login
+POST {{authUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "TestPassword123!"
+}
+
+### Save tokens from login response
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MjUzMDAxLCJpYXQiOjE3NDYyNDk0MDEsImp0aSI6IjM0Mjc4ODVkMDYzOTQwMjU5MjBkODc1MTYyMTA1YTNlIiwidXNlcl9pZCI6MX0._s-YkvVss_KDD4poKTyxppMInkIiWcLq7cdYtVevAh8
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0NjgxODIwOSwiaWF0IjoxNzQ2MjEzNDA5LCJqdGkiOiIzN2JlMWNkZjhlMmQ0MjczODA0OWQ2Zjg3YjkyMGNlMCIsInVzZXJfaWQiOjE3fQ.HZWjWO1rWtPq-pBBHK27wGC9NPZmJgzoLAgyKCzWLlQ
+
+### Refresh access token
+# @name refresh
+POST {{authUrl}}/token/refresh/
+Content-Type: application/json
+
+{
+    "refresh": "{{refreshToken}}"
+}
+
+### Refresh with invalid token (error case)
+POST {{authUrl}}/token/refresh/
+Content-Type: application/json
+
+{
+    "refresh": "invalid-token"
+}
+
+
+
+###profile
+GET {{authUrl}}/me/
+Authorization: Bearer {{accessToken}}
+
+
+###update
+PATCH {{authUrl}}/me/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "first_name": "Updated",
+    "last_name": "User"
+}
+
+
+
+### Logout
+POST {{authUrl}}/logout/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "refresh_token": "{{refreshToken}}"
+}
+
+#######################
+### Health/Symptoms ###
+#######################
+
+### List all symptoms
+# @name symptoms
+GET {{healthUrl}}/symptoms/
+Authorization: Bearer {{accessToken}}
+
+### List symptoms with pagination
+GET {{healthUrl}}/symptoms?page=1&page_size=5
+Authorization: Bearer {{accessToken}}
+
+### Get specific symptom
+GET {{healthUrl}}/symptoms/1/
+Authorization: Bearer {{accessToken}}
+
+### Get non-existent symptom (error case)
+GET {{healthUrl}}/symptoms/999/
+Authorization: Bearer {{accessToken}}
+
+### Search symptoms
+GET {{healthUrl}}/symptoms?q=fever
+Authorization: Bearer {{accessToken}}
+
+### List all conditions
+GET {{healthUrl}}/conditions/
+Authorization: Bearer {{accessToken}}
+
+### List conditions with pagination
+GET {{healthUrl}}/conditions?page=1&page_size=5
+Authorization: Bearer {{accessToken}}
+
+### Get specific condition
+GET {{healthUrl}}/conditions/1/
+Authorization: Bearer {{accessToken}}
+
+### Get non-existent condition (error case)
+GET {{healthUrl}}/conditions/999/
+Authorization: Bearer {{accessToken}}
+
+### Search conditions
+GET {{healthUrl}}/conditions?q=diabetes
+Authorization: Bearer {{accessToken}}
+
+### Create symptom check
+# @name createCheck
+POST {{healthUrl}}/checks/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "symptoms": [1]
+}
+
+### Save symptom check ID
+@checkId = {{createCheck.response.body.id}}
+
+### Create symptom check with invalid data (error case)
+POST {{healthUrl}}/checks/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "symptoms": [999]
+}
+
+### Create symptom check with additional info
+POST {{healthUrl}}/checks/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "symptoms": [1, 2],
+    "additional_info": "Symptoms started yesterday evening"
+}
+
+### List my symptom checks
+GET {{healthUrl}}/checks/
+Authorization: Bearer {{accessToken}}
+
+### List symptom checks with pagination
+GET {{healthUrl}}/checks?page=1&page_size=5
+Authorization: Bearer {{accessToken}}
+
+### Get specific symptom check
+GET {{healthUrl}}/checks/{{checkId}}/
+Authorization: Bearer {{accessToken}}
+
+### Get non-existent symptom check (error case)
+GET {{healthUrl}}/checks/999/
+Authorization: Bearer {{accessToken}}
+
+#######################
+### First Aid ###
+#######################
+
+### List first aid guides and remedies
+GET {{firstaidUrl}}/
+Authorization: Bearer {{accessToken}}
+
+### List with pagination
+GET {{firstaidUrl}}?page=1&page_size=5
+Authorization: Bearer {{accessToken}}
+
+### List first aid guides only
+GET {{firstaidUrl}}?type=firstaid
+Authorization: Bearer {{accessToken}}
+
+### List home remedies only
+GET {{firstaidUrl}}?type=homeremedy
+Authorization: Bearer {{accessToken}}
+
+### Get specific first aid guide
+GET {{firstaidUrl}}/1/
+Authorization: Bearer {{accessToken}}
+
+### Get non-existent first aid guide (error case)
+GET {{firstaidUrl}}/999/
+Authorization: Bearer {{accessToken}}
+
+### Search all items
+GET {{firstaidUrl}}?q=burn
+Authorization: Bearer {{accessToken}}
+
+### Search first aid guides only
+GET {{firstaidUrl}}?q=burn&type=firstaid
+Authorization: Bearer {{accessToken}}
+
+### Search home remedies only
+GET {{firstaidUrl}}?q=headache&type=homeremedy
+Authorization: Bearer {{accessToken}}
+
+### Get specific home remedy
+GET {{firstaidUrl}}/remedies/1/
+Authorization: Bearer {{accessToken}}
+
+### Get non-existent home remedy (error case)
+GET {{firstaidUrl}}/remedies/999/
+Authorization: Bearer {{accessToken}}
+
+### Search with sorting
+GET {{firstaidUrl}}?q=headache&ordering=-created_at
+Authorization: Bearer {{accessToken}}
+
+### Filter by severity level
+GET {{firstaidUrl}}?type=firstaid&severity_level=high
+Authorization: Bearer {{accessToken}}
+
+#######################
+### Education ###
+#######################
+
+### List articles
+GET {{educationUrl}}/articles/
+Authorization: Bearer {{accessToken}}
+
+### List articles with pagination
+GET {{educationUrl}}/articles?page=1&page_size=5
+Authorization: Bearer {{accessToken}}
+
+### List articles with filters
+GET {{educationUrl}}/articles?is_published=true&related_conditions=1
+Authorization: Bearer {{accessToken}}
+
+### List articles with date range filter
+GET {{educationUrl}}/articles?published_date__gte=2025-01-01&published_date__lte=2025-12-31
+Authorization: Bearer {{accessToken}}
+
+### Get specific article
+GET {{educationUrl}}/articles/1/
+Authorization: Bearer {{accessToken}}
+
+### Get non-existent article (error case)
+GET {{educationUrl}}/articles/999/
+Authorization: Bearer {{accessToken}}
+
+### Search articles
+GET {{educationUrl}}/articles?q=diabetes
+Authorization: Bearer {{accessToken}}
+
+### Create article (admin only)
+POST {{educationUrl}}/articles/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "title": "Understanding Diabetes",
+    "summary": "A comprehensive guide about diabetes",
+    "content": "Diabetes is a chronic condition that affects how your body turns food into energy...",
+    "tags": ["diabetes", "health", "chronic conditions"],
+    "is_published": true,
+    "related_conditions": [1]
+}
+
+### Create article with invalid data (error case)
+POST {{educationUrl}}/articles/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "title": "",
+    "related_conditions": [999]
+}
+
+### Update article (admin only)
+PATCH {{educationUrl}}/articles/1/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "title": "Understanding Type 2 Diabetes",
+    "is_published": true
+}
+
+### Delete article (admin only)
+DELETE {{educationUrl}}/articles/1/
+Authorization: Bearer {{accessToken}}
+
+### List videos
+GET {{educationUrl}}/videos/
+Authorization: Bearer {{accessToken}}
+
+### List videos with pagination
+GET {{educationUrl}}/videos?page=1&page_size=5
+Authorization: Bearer {{accessToken}}
+
+### List videos with filters
+GET {{educationUrl}}/videos?is_published=true&related_symptoms=1
+Authorization: Bearer {{accessToken}}
+
+### List videos with duration filter
+GET {{educationUrl}}/videos?duration_minutes__gte=10&duration_minutes__lte=30
+Authorization: Bearer {{accessToken}}
+
+### Get specific video
+GET {{educationUrl}}/videos/1/
+Authorization: Bearer {{accessToken}}
+
+### Get non-existent video (error case)
+GET {{educationUrl}}/videos/999/
+Authorization: Bearer {{accessToken}}
+
+### Search videos
+GET {{educationUrl}}/videos?q=first%20aid
+Authorization: Bearer {{accessToken}}
+
+### Create video (admin only)
+POST {{educationUrl}}/videos/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "title": "First Aid for Burns",
+    "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "duration_minutes": 15,
+    "is_published": true,
+    "related_symptoms": [1]
+}
+
+### Create video with invalid data (error case)
+POST {{educationUrl}}/videos/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "title": "",
+    "youtube_url": "not-a-url",
+    "duration_minutes": -1
+}
+
+### Update video (admin only)
+PATCH {{educationUrl}}/videos/1/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "title": "Advanced First Aid for Burns",
+    "duration_minutes": 20
+}
+
+### Delete video (admin only)
+DELETE {{educationUrl}}/videos/1/
+Authorization: Bearer {{accessToken}}
+
+#######################
+### Core ###
+#######################
+
+### Get server status
+GET {{coreUrl}}/healthz/
+
+### Get server metrics (admin only)
+GET {{coreUrl}}/metrics/
+Authorization: Bearer {{accessToken}}
+
+
+
+
+
+
+#######################
+### Doctors ###
+#######################
+
+### Register new doctor
+# @name registerDoctor
+POST {{doctorsUrl}}/register/
+Content-Type: application/json
+
+{
+  "email": "dr.john@example.com",
+  "password": "DoctorPass123!",
+  "first_name": "John",
+  "last_name": "Smith",
+  "phone": "+251912345678",
+  "license_number": "MED123456",
+  "specialization": "Cardiologist",
+  "consultation_fee": 150.00
+}
+
+
+### Login as doctor
+# @name loginDoctor
+POST {{authUrl}}/login/
+Content-Type: application/json
+
+{
+  "email": "dr.john@example.com",
+  "password": "DoctorPass123!"
+}
+
+
+### Save doctor access token
+@doctorAccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MjI1MzI3LCJpYXQiOjE3NDYyMjE3MjcsImp0aSI6IjdlMGU1MWZmYzZmZjRiNjk4M2Y1YTBkODFjM2E4NjViIiwidXNlcl9pZCI6OH0.sax1wdNiIlfogT8y-kNoMJT1WJvg85HirNfA385v9xk
+### List all doctors
+GET {{doctorsUrl}}/profiles/
+Authorization: Bearer {{doctorAccessToken}}
+
+### List doctors with pagination
+GET {{doctorsUrl}}/profiles?page=1&page_size=5
+Authorization: Bearer {{doctorAccessToken}}
+
+### Get specific doctor profile
+GET {{doctorsUrl}}/profiles/me/
+Authorization: Bearer {{doctorAccessToken}}
+
+### Update doctor profile
+PATCH {{doctorsUrl}}/profiles/me/
+Authorization: Bearer {{doctorAccessToken}}
+Content-Type: application/json
+
+{
+  "specialization": "Senior Cardiologist",
+  "consultation_fee": 250.00
+}
+
+
+### List doctor availabilities
+GET {{doctorsUrl}}/availability/
+Authorization: Bearer {{doctorAccessToken}}
+
+### List availabilities with date range
+GET {{doctorsUrl}}/availability?start_date=2025-05-01&end_date=2025-05-31
+Authorization: Bearer {{doctorAccessToken}}
+
+### Create availability slot
+POST {{doctorsUrl}}/availability/
+Authorization: Bearer {{doctorAccessToken}}
+Content-Type: application/json
+
+{
+    "day": "2025-05-15",
+    "start_time": "09:00:00",
+    "end_time": "17:00:00"
+}
+
+### Update availability slot
+PATCH {{doctorsUrl}}/availability/5/
+Authorization: Bearer {{doctorAccessToken}}
+Content-Type: application/json
+
+{
+    "start_time": "10:00:00",
+    "end_time": "18:00:00"
+}
+
+### Delete availability slot
+DELETE {{doctorsUrl}}/availability/5/
+Authorization: Bearer {{doctorAccessToken}}
+
+### List teleconsultations
+GET {{doctorsUrl}}/teleconsults/
+Authorization: Bearer {{doctorAccessToken}}
+
+### List teleconsultations with filters
+GET {{doctorsUrl}}/teleconsults?status=scheduled&start_date=2025-05-01&end_date=2025-05-31
+Authorization: Bearer {{doctorAccessToken}}
+
+### Create teleconsultation request
+POST {{doctorsUrl}}/teleconsults/
+Authorization: Bearer {{doctorAccessToken}}
+Content-Type: application/json
+
+{
+    "patient_id": 2,
+    "doctor_id": 5,
+    "scheduled_time": "2025-05-15T10:00:00Z",
+    "duration": 30,
+    "meeting_url": "https://meet.example.com/consult-123"
+}
+
+### Update teleconsultation status
+PATCH {{doctorsUrl}}/teleconsults/3/
+Authorization: Bearer {{doctorAccessToken}}
+Content-Type: application/json
+
+{
+    "status": "completed"
+}
+
+### Get specific teleconsultation
+GET {{doctorsUrl}}/teleconsults/1/
+Authorization: Bearer {{doctorAccessToken}}
+
+### Delete teleconsultation
+DELETE {{doctorsUrl}}/teleconsults/1/
+Authorization: Bearer {{doctorAccessToken}}
+
+### Error Cases ###
+
+### Register with invalid data
+POST {{doctorsUrl}}/register/
+Content-Type: application/json
+
+{
+    "email": "invalid-email",
+    "password": "short",
+    "license_number": "",
+    "specialization": "",
+    "consultation_fee": -100
+}
+
+### Get non-existent doctor profile
+GET {{doctorsUrl}}/profiles/999/
+Authorization: Bearer {{doctorAccessToken}}
+
+### Create availability with invalid time
+POST {{doctorsUrl}}/availability/
+Authorization: Bearer {{doctorAccessToken}}
+Content-Type: application/json
+
+{
+    "day": "2025-05-15",
+    "start_time": "17:00:00",
+    "end_time": "09:00:00"
+}
+
+### Create teleconsultation with invalid duration
+POST {{doctorsUrl}}/teleconsults/
+Authorization: Bearer {{doctorAccessToken}}
+Content-Type: application/json
+
+{
+    "patient_id": 1,
+    "doctor_id": 1,
+    "scheduled_time": "2025-05-15T10:00:00Z",
+    "duration": 5,
+    "meeting_url": "https://meet.example.com/consult-123"
+}
+
+### Update non-existent teleconsultation
+PATCH {{doctorsUrl}}/teleconsults/999/
+Authorization: Bearer {{doctorAccessToken}}
+Content-Type: application/json
+
+{
+    "status": "completed"
+}
+
+
+
+
+# ####clincis
+
+# ### Get all clinics
+# GET {{baseUrl}}/clinics/
+
+# ### Get specific clinic
+# GET {{baseUrl}}/clinics/1/
+
+# ### Find nearby clinics
+# GET {{baseUrl}}/clinics/nearby/?lat=9.0054&lng=38.7636
+
+
+
+###skin diagnosis
+POST {{baseUrl}}/skin-diagnosis/
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data
+
+{
+    "image": "/home/teddy/Downloads/image_skin.jpg"
+}
+
+
+####chatbot
+POST {{baseUrl}}/chat/interact/
+Authorization:  Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "message": "so what should i do"
+}
+
+
+
