@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+Technical Stack
+
+- Backend: Use Django for all backend development.
+- Database: Use SQL (e.g., built in sqlite) with separate databases for dev, test, and prod. Never use JSON file storage.
+- Admin Panel: Leverage Django Admin for administrative interfaces.
+- Authentication: Implement JWT for authentication using libraries like djangorestframework-simplejwt.

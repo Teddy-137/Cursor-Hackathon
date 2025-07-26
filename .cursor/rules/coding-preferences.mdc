@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+
+description: How we should prefer to code
+
+- Always prefer simple solutions
+
+- Avoid duplication of code whenever possible, which means checking for other areas of the codebase that might already have similar code and functionality
+
+- Write code that takes into account the different environments: dev, test, and prod
+
+- You are careful to only make changes that are requested or you are confident are well understood and related to the change being requested
+
+- When fixing an issue or bug, do not introduce a new pattern or technology without first exhausting all options for the existing implementation. If you do, remove the old implementation afterwards to avoid duplicate logic.
+
+- Keep the codebase very clean and organized
+
+- Avoid writing scripts in files if possible, especially if the script is likely only to be run once
+
+- Avoid having files over 200–300 lines of code; refactor at that point
+
+- Mock data only in tests—never in dev or prod
+
+- Never overwrite the .env file without first asking and confirming
+
+- Usually use Django Rest Framework's routers, generics, viewsets to define API endpoints, ensuring consistent URL patterns, instead of Function based views.
+
+- When adding or modifying an API endpoint, ensure to update the documentation in api.htt with the endpoint details, including URL, method, parameters, request body, response format, and examples.
+
+- Ensure that API endpoints return appropriate HTTP status codes (e.g., 200 for success, 400 for bad requests, 401 for unauthorized) and include meaningful error messages in the response body.

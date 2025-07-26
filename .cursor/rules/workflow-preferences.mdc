@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+
+description: How I like to code globs: alwaysApply: false
+
+- Focus on the area of code relevant to the task
+- Do not touch code that is unrelated to the task
+- Write thorough tests for all major functionality, using Django Rest Framework's testing tools (e.g., APITestCase) for API endpoints
+- Avoid making major changes to patterns and architectures of how features work, after they have shown to work well, unless explicitly instructed to do so
+- Always think about what other methods and areas of code might be affected by code changes
