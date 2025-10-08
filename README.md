@@ -1,8 +1,8 @@
 # Cursor-Hackathon
 
-# 🏥 MediHelp - Your All-in-One Healthcare Companion
+# 🏥 TenaHub - Your All-in-One Healthcare Companion
 
-MediHelp is a comprehensive web-based healthcare platform built with Django that bridges the gap between patients and healthcare providers. It offers a suite of services, from doctor consultations to health education, first aid resources, AI-powered support, and more — all in one place, accessible to users across Ethiopia.
+TenaHub is a comprehensive web-based healthcare platform built with Django that bridges the gap between patients and healthcare providers. It offers a suite of services, from doctor consultations to health education, first aid resources, AI-powered support, and more — all in one place, accessible to users across Ethiopia.
 
 ## 🌟 Features
 
@@ -50,13 +50,4 @@ MediHelp is a comprehensive web-based healthcare platform built with Django that
 - **Database**: PostgreSQL / SQLite (dev)
 - **AI**: NLP-powered chatbot (Ollama + custom slot filler)
 - **Deployment**: Render / Heroku / Railway (based on env)
-- **CI/CD**: GitHub Actions (planned)
-
----
-
-## 🚀 Setup & Installation
-
-1. **Clone the repo:**
-   ```bash
-   git clone https://github.com/your-username/MediHelp-Backend.git
-   cd MediHelp-Backend
+- **CI/CD**: GitHub Actions
